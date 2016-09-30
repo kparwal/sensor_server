@@ -9,6 +9,7 @@ import argparse
 import csv
 import random
 import string
+import datetime
 import logging
 
 logging.basicConfig()
@@ -94,6 +95,11 @@ def clientthread(conn, addr):
                 reply = conn.recv(4096)
                 if reply.split(":")[0] == "TEMP":
                     clients[username].update(float(reply.split(":")[1]))
+                    timestamp = datetime.datetime.fromtimestamp(time.time()).strftime('%b %d %H:%M:%S')
+                    print "Sensor: " + username + " recorded: " + reply.split(":")[1] + " time: " \
+                          + timestamp + " sensorMin: " + str(clients[username].min_temp) + " sensorMax: " \
+                          + str(clients[username].max_temp) + " sensorAvg: " + str(clients[username].average()) \
+                          + " allAvg: " + str(total_average(clients))
                     STATE = protocol.TEMP
             elif STATE == protocol.TEMP:
                 message = "AVG:" + str(clients[username].average()) + "," + str(total_average(clients)) + \

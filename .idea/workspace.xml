@@ -1,11 +1,9 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <project version="4">
   <component name="ChangeListManager">
-    <list default="true" id="a3ecc683-7df0-4e76-9901-85efd3420378" name="Default" comment="">
-      <change type="NEW" beforePath="" afterPath="$PROJECT_DIR$/README" />
-      <change type="MOVED" beforePath="$PROJECT_DIR$/sensor-client-tcp.py" afterPath="$PROJECT_DIR$/sensor-tcp.py" />
-      <change type="MOVED" beforePath="$PROJECT_DIR$/sensor-client-udp.py" afterPath="$PROJECT_DIR$/sensor-udp.py" />
+    <list default="true" id="a3ecc683-7df0-4e76-9901-85efd3420378" name="Default" comment="added better UDP logic, added more print statements">
       <change type="MODIFICATION" beforePath="$PROJECT_DIR$/.idea/workspace.xml" afterPath="$PROJECT_DIR$/.idea/workspace.xml" />
+      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/README" afterPath="$PROJECT_DIR$/README" />
       <change type="MODIFICATION" beforePath="$PROJECT_DIR$/sensor-server-tcp.py" afterPath="$PROJECT_DIR$/sensor-server-tcp.py" />
       <change type="MODIFICATION" beforePath="$PROJECT_DIR$/sensor-server-udp.py" afterPath="$PROJECT_DIR$/sensor-server-udp.py" />
     </list>
@@ -31,20 +29,18 @@
       <file leaf-file-name="sensor-server-tcp.py" pinned="false" current-in-tab="false">
         <entry file="file://$PROJECT_DIR$/sensor-server-tcp.py">
           <provider selected="true" editor-type-id="text-editor">
-            <state relative-caret-position="512">
-              <caret line="117" column="66" selection-start-line="117" selection-start-column="66" selection-end-line="117" selection-end-column="66" />
-              <folding>
-                <element signature="e#19#32#0" expanded="true" />
-              </folding>
+            <state relative-caret-position="170">
+              <caret line="10" column="13" selection-start-line="10" selection-start-column="13" selection-end-line="10" selection-end-column="13" />
+              <folding />
             </state>
           </provider>
         </entry>
       </file>
-      <file leaf-file-name="sensor-server-udp.py" pinned="false" current-in-tab="false">
+      <file leaf-file-name="sensor-server-udp.py" pinned="false" current-in-tab="true">
         <entry file="file://$PROJECT_DIR$/sensor-server-udp.py">
           <provider selected="true" editor-type-id="text-editor">
-            <state relative-caret-position="850">
-              <caret line="116" column="64" selection-start-line="116" selection-start-column="64" selection-end-line="116" selection-end-column="64" />
+            <state relative-caret-position="410">
+              <caret line="132" column="35" selection-start-line="132" selection-start-column="35" selection-end-line="132" selection-end-column="35" />
               <folding>
                 <element signature="e#18#31#0" expanded="true" />
               </folding>
@@ -52,11 +48,11 @@
           </provider>
         </entry>
       </file>
-      <file leaf-file-name="README" pinned="false" current-in-tab="true">
+      <file leaf-file-name="README" pinned="false" current-in-tab="false">
         <entry file="file://$PROJECT_DIR$/README">
           <provider selected="true" editor-type-id="text-editor">
-            <state relative-caret-position="0">
-              <caret line="0" column="0" selection-start-line="0" selection-start-column="0" selection-end-line="0" selection-end-column="0" />
+            <state relative-caret-position="748">
+              <caret line="44" column="26" selection-start-line="44" selection-start-column="26" selection-end-line="44" selection-end-column="26" />
               <folding />
             </state>
           </provider>
@@ -65,8 +61,8 @@
       <file leaf-file-name="sensor-udp.py" pinned="false" current-in-tab="false">
         <entry file="file://$PROJECT_DIR$/sensor-udp.py">
           <provider selected="true" editor-type-id="text-editor">
-            <state relative-caret-position="425">
-              <caret line="25" column="95" selection-start-line="25" selection-start-column="95" selection-end-line="25" selection-end-column="95" />
+            <state relative-caret-position="561">
+              <caret line="117" column="37" selection-start-line="117" selection-start-column="0" selection-end-line="118" selection-end-column="0" />
               <folding>
                 <element signature="e#19#47#0" expanded="true" />
               </folding>
@@ -143,9 +139,10 @@
         <option value="$PROJECT_DIR$/client_controller.py" />
         <option value="$PROJECT_DIR$/sensor-client-udp.py" />
         <option value="$PROJECT_DIR$/sensor-client-tcp.py" />
+        <option value="$PROJECT_DIR$/sensor-tcp.py" />
+        <option value="$PROJECT_DIR$/README" />
         <option value="$PROJECT_DIR$/sensor-udp.py" />
         <option value="$PROJECT_DIR$/sensor-server-tcp.py" />
-        <option value="$PROJECT_DIR$/sensor-tcp.py" />
         <option value="$PROJECT_DIR$/sensor-server-udp.py" />
       </list>
     </option>
@@ -454,7 +451,14 @@
       <option name="project" value="LOCAL" />
       <updated>1475267449867</updated>
     </task>
-    <option name="localTasksCounter" value="3" />
+    <task id="LOCAL-00003" summary="added debugger logic, some input validation">
+      <created>1475272756821</created>
+      <option name="number" value="00003" />
+      <option name="presentableId" value="LOCAL-00003" />
+      <option name="project" value="LOCAL" />
+      <updated>1475272756821</updated>
+    </task>
+    <option name="localTasksCounter" value="4" />
     <servers />
   </component>
   <component name="ToolWindowManager">
@@ -495,7 +499,8 @@
   <component name="VcsManagerConfiguration">
     <MESSAGE value="updated client_controller to have min max functionality" />
     <MESSAGE value="added #!/usr/bin/python for running as executable" />
-    <option name="LAST_COMMIT_MESSAGE" value="added #!/usr/bin/python for running as executable" />
+    <MESSAGE value="added debugger logic, some input validation" />
+    <option name="LAST_COMMIT_MESSAGE" value="added debugger logic, some input validation" />
   </component>
   <component name="XDebuggerManager">
     <breakpoint-manager>
@@ -508,9 +513,7 @@
       <provider selected="true" editor-type-id="text-editor">
         <state relative-caret-position="544">
           <caret line="40" column="0" selection-start-line="40" selection-start-column="0" selection-end-line="40" selection-end-column="0" />
-          <folding>
-            <element signature="e#19#32#0" expanded="true" />
-          </folding>
+          <folding />
         </state>
       </provider>
     </entry>
@@ -564,9 +567,7 @@
       <provider selected="true" editor-type-id="text-editor">
         <state relative-caret-position="476">
           <caret line="30" column="0" selection-start-line="30" selection-start-column="0" selection-end-line="30" selection-end-column="0" />
-          <folding>
-            <element signature="e#19#32#0" expanded="true" />
-          </folding>
+          <folding />
         </state>
       </provider>
     </entry>
@@ -612,16 +613,6 @@
         </state>
       </provider>
     </entry>
-    <entry file="file://$PROJECT_DIR$/sensor-server-tcp.py">
-      <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="512">
-          <caret line="117" column="66" selection-start-line="117" selection-start-column="66" selection-end-line="117" selection-end-column="66" />
-          <folding>
-            <element signature="e#19#32#0" expanded="true" />
-          </folding>
-        </state>
-      </provider>
-    </entry>
     <entry file="file://$PROJECT_DIR$/sensor-tcp.py">
       <provider selected="true" editor-type-id="text-editor">
         <state relative-caret-position="360">
@@ -632,31 +623,39 @@
         </state>
       </provider>
     </entry>
+    <entry file="file://$PROJECT_DIR$/README">
+      <provider selected="true" editor-type-id="text-editor">
+        <state relative-caret-position="748">
+          <caret line="44" column="26" selection-start-line="44" selection-start-column="26" selection-end-line="44" selection-end-column="26" />
+          <folding />
+        </state>
+      </provider>
+    </entry>
     <entry file="file://$PROJECT_DIR$/sensor-udp.py">
       <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="425">
-          <caret line="25" column="95" selection-start-line="25" selection-start-column="95" selection-end-line="25" selection-end-column="95" />
+        <state relative-caret-position="561">
+          <caret line="117" column="37" selection-start-line="117" selection-start-column="0" selection-end-line="118" selection-end-column="0" />
           <folding>
             <element signature="e#19#47#0" expanded="true" />
           </folding>
         </state>
       </provider>
     </entry>
-    <entry file="file://$PROJECT_DIR$/sensor-server-udp.py">
+    <entry file="file://$PROJECT_DIR$/sensor-server-tcp.py">
       <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="850">
-          <caret line="116" column="64" selection-start-line="116" selection-start-column="64" selection-end-line="116" selection-end-column="64" />
-          <folding>
-            <element signature="e#18#31#0" expanded="true" />
-          </folding>
+        <state relative-caret-position="170">
+          <caret line="10" column="13" selection-start-line="10" selection-start-column="13" selection-end-line="10" selection-end-column="13" />
+          <folding />
         </state>
       </provider>
     </entry>
-    <entry file="file://$PROJECT_DIR$/README">
+    <entry file="file://$PROJECT_DIR$/sensor-server-udp.py">
       <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="0">
-          <caret line="0" column="0" selection-start-line="0" selection-start-column="0" selection-end-line="0" selection-end-column="0" />
-          <folding />
+        <state relative-caret-position="410">
+          <caret line="132" column="35" selection-start-line="132" selection-start-column="35" selection-end-line="132" selection-end-column="35" />
+          <folding>
+            <element signature="e#18#31#0" expanded="true" />
+          </folding>
         </state>
       </provider>
     </entry>

@@ -5,6 +5,7 @@ from client_controller import *
 import md5
 import argparse
 import csv
+import datetime
 import random
 import string
 import logging
@@ -53,29 +54,40 @@ state_machine = {}
 nonce_dict = {}
 conversations = 0
 addr_dict = {}
+attempt_dict = {}
+username = ""
+message = ""
+client_addr = ""
 while 1:
     if conversations == 0:
         sock.settimeout(None)
     else:
         sock.settimeout(timeout)
-    # print "conversations" + str(conversations)
-    reply, client_addr = sock.recvfrom(4096)
-    username = reply.split('|')[0]
-    reply = reply.split("|")[1]
-    if username not in state_machine and username in clients:
-        state_machine[username] = protocol.AUTH
-    elif username not in clients:
-        sock.sendto(protocol.REFD, client_addr)
-        if reply == protocol.END:
-            print "Authentication failed for client: " + client_addr[0] + " port: " + str(client_addr[1]) + " user: " + username
-        continue
-    if username not in addr_dict:
-        addr_dict[username] = client_addr
-    STATE = state_machine[username]
-    message = ""
-    # print state_machine
-    # print reply
     try:
+        # print "conversations" + str(conversations)
+        if conversations > 0 and attempt_dict[username] >= 5:
+            conversations -= 1
+            attempt_dict.pop(username)
+            state_machine[username] = protocol.AUTH
+            addr_dict.pop(username)
+        reply, client_addr = sock.recvfrom(4096)
+        username = reply.split('|')[0]
+        reply = reply.split("|")[1]
+        if username not in state_machine and username in clients:
+            state_machine[username] = protocol.AUTH
+        elif username not in clients:
+            sock.sendto(protocol.REFD, client_addr)
+            if reply == protocol.END:
+                print "Authentication failed for client: " + client_addr[0] + " port: " + str(
+                    client_addr[1]) + " user: " + username
+            continue
+        if username not in addr_dict:
+            addr_dict[username] = client_addr
+        attempt_dict[username] = 0
+        STATE = state_machine[username]
+        message = ""
+        # print state_machine
+        # print reply
         if STATE == protocol.AUTH and reply == protocol.AUTH:
             # Random String Generator from http://stackoverflow.com/questions/2257441/random-string-generation-with-upper-case-letters-and-digits-in-python
             conversations += 1
@@ -108,8 +120,13 @@ while 1:
         elif STATE == protocol.CONT:
             clients[username].update(float(reply.split(":")[1]))
             logger.debug(username + " gave reading: " + reply.split(":")[1])
+            timestamp = datetime.datetime.fromtimestamp(time.time()).strftime('%b %d %H:%M:%S')
             message = "AVG:" + str(clients[username].average()) + "," + str(total_average(clients))+\
                       ','+str(clients[username].max_temp) + ',' + str(clients[username].min_temp)
+            print "Sensor: " + username + " recorded: " + reply.split(":")[1] + " time: " \
+                  + timestamp + " sensorMin: " + str(clients[username].min_temp) + " sensorMax: "\
+                  + str(clients[username].max_temp) + " sensorAvg: " + str(clients[username].average()) \
+                  + " allAvg: " + str(total_average(clients))
             STATE = protocol.END
             conversations -= 1
             sock.sendto(message, client_addr)
@@ -119,7 +136,8 @@ while 1:
             addr_dict.pop(username)
         state_machine[username] = STATE
     except socket.timeout:
-        print "UDP Time out, resending..."
+        logger.debug("UDP Time out, resending...")
+        attempt_dict[username] += 1
         sock.sendto(message, client_addr)
     except socket.error, exc:
         logger.debug("Client ended conversation." + str(exc))

@@ -1,0 +1,45 @@
+Name: Keshav Parwal
+Email: kparwal3@gatech.edu
+Class: CS 3251
+Section: A
+Date: 9/30/2016
+Files: 
+	client_controller.py: Module for handling individual sensors as objects, and for protocol constants
+	clients.csv: Sample csv file with usernames and passwords
+	md5.py: MD5 Implementation, see file for URL to where I found this code
+	README: this
+	sensor-udp.py: Python implementation of the UDP based sensor 
+	sensor-tcp.py: Python implementation of the TCP based sensor
+	sensor-tcp-server.py: Python implementation of the TCP based server, uses multithreading to handle multiple clients
+	sensor-udp-server.py: Python implementation of the UDP based server, uses the internal UDP queue to handle multiple clients
+
+Running this program:
+	This was created under Python 2.7.10, which should be the same version of Python in the docker instances. To run these files, 
+	you should either run them manually with 'python <file-name>' or just './<file-name>'. Note you may need to run a chmod +x for
+	the latter to work properly on all of the files. Each sensor-*.py file has a header with #!/usr/bin/python at the top. 
+
+	Just run the server before the client, and it should work.
+
+Protocol:
+	These programs use (almost) the same protocol for TCP and UDP, and it is a plaintext protocol based on colon (":") delimited lists
+	of information. I chose making the protocol based on colon delimited lists because it allows for both rigidity (I know some argument
+	will always be second or third in the list) and for flexibility (Oops, I need another argument, let me just tack it onto the end of the
+	list). 
+
+	1) The server awakes and listens for messages.
+	2) The client sends it a message, "AUTH".
+	3) The server responds with "CHAL:<random 64 letter string>".
+	4) The client responds with "RESP:<hash(username,password,random string)>:<username>".
+	5) The server responds with either "REFD" or "CONT".
+	6) If server responds with "REFD", skip to 9.
+	7) If server responds with "CONT", client sends "TEMP:<reading>".
+	8) The server responds with "AVG:<sensorAverage>,<allAverage>,<maxTemp>,<minTemp>".
+	9) The client responds with "END". The server and client then disconnect.
+
+	This protocol is implemented as-is for the TCP server and sensor, but for the UDP server and sensor for the sake of simplicity in design
+	every client message is prepended with "<username>|". Thus the UDP server first pulls off the username before the pipe ("|") and then 
+	proceeds to parse the rest of the message as specified above. 
+
+	In the case of UDP, if a packet is dropped (we assume this is the case when the timer runs out), the client will try 
+	a maximum of 5 times to send the packet again. If after that, there is still no response, it will assume some outside error has 
+	occurred and will end. The server will keep processing other requests. 
