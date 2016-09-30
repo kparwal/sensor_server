@@ -9,11 +9,22 @@ import argparse
 import csv
 import random
 import string
+import logging
+
+logging.basicConfig()
+logger = logging.getLogger("sensor-tcp-server")
+
 
 parser = argparse.ArgumentParser(description='Sensor TCP Client')
 parser.add_argument('-p',"--port" , help="Host's inbound port", default=8888, type=int)
 parser.add_argument('-f',"--csvfile" , help="Password CSV File", required=True)
+parser.add_argument('-d', "--debug", help="Turn on debugging statements", action='store_true',  default=False)
+
 args = vars(parser.parse_args())
+if args['debug']:
+    logger.setLevel(logging.DEBUG)
+else:
+    logger.setLevel(logging.INFO)
 csvfile = args['csvfile']
 port = args['port']
 
@@ -21,22 +32,25 @@ HOST = ''   # Symbolic name meaning all available interfaces
 # PORT = 8888 # Arbitrary non-privileged port
 clients = {}
 s = socket.socket(socket.AF_INET, socket.SOCK_STREAM)
-print 'Socket created'
+logger.debug('Socket created')
 with open(csvfile, "rb") as clientfile:
-    clientreader = csv.reader(clientfile, delimiter=",")
-    for row in clientreader:
-        clients[row[0]] = sensor_client(row[0], row[1])
+    try:
+        clientreader = csv.reader(clientfile, delimiter=",")
+        for row in clientreader:
+            clients[row[0]] = sensor_client(row[0], row[1])
+    except:
+        print "Provided csvfile is invalid. Exiting."
 #Bind socket to local host and port
 try:
     s.bind((HOST, port))
 except socket.error , msg:
-    print 'Bind failed. Error Code : ' + str(msg[0]) + ' Message ' + msg[1]
+    logger.debug('Bind failed. Error Code : ' + str(msg[0]) + ' Message ' + msg[1])
     sys.exit()
 
-print 'Socket bind complete'
+logger.debug('Socket bind complete')
 #Start listening on socket
 s.listen(10)
-print 'Socket now listening'
+logger.debug('Socket now listening')
 
 def total_average(client_dict):
     return sum([client.running_sum for _, client in client_dict.iteritems()])/sum([client.running_count for _, client in client_dict.iteritems()])
@@ -63,6 +77,7 @@ def clientthread(conn, addr):
                 conn.sendall(message)
                 reply = conn.recv(4096)
                 if reply.split(":")[0] == "RESP":
+                    username = reply.split(":")[2]
                     if reply.split(":")[2] not in clients:
                         STATE = protocol.REFD
                     else:
@@ -70,10 +85,10 @@ def clientthread(conn, addr):
                         localhash = md5.MD5(clients[reply.split(":")[2]].username + clients[reply.split(":")[2]].password + nonce).hexdigest()
                         if md5hash == localhash:
                             STATE = protocol.CONT
-                            username = reply.split(":")[2]
                         else:
                             STATE = protocol.REFD
             elif STATE == protocol.CONT:
+                logger.debug(username + " has been authenticated.")
                 message = "CONT"
                 conn.sendall(message)
                 reply = conn.recv(4096)
@@ -81,25 +96,26 @@ def clientthread(conn, addr):
                     clients[username].update(float(reply.split(":")[1]))
                     STATE = protocol.TEMP
             elif STATE == protocol.TEMP:
-                message = "AVG:" + str(clients[username].average()) + "," + str(total_average(clients))
+                message = "AVG:" + str(clients[username].average()) + "," + str(total_average(clients)) + \
+                          ',' + str(clients[username].max_temp) + ',' + str(clients[username].min_temp)
                 conn.sendall(message)
                 success = True
             elif STATE == protocol.REFD:
                 message = "REFD"
                 conn.sendall(message)
-                print "Authentication refused by server."
+                print "Authentication failed for client: " + addr[0] + " port: " + str(addr[1]) + " user: " + username
                 break
         except socket.error, exc:
-            print "Client ended connection." + str(exc)
+            logger.debug("Client ended connection.")
             break
-    print addr[0]+ ":" + str(addr[1]) + ' ended conversation.'
+    logger.debug(addr[0]+ ":" + str(addr[1]) + ' ended conversation.')
     conn.close()
 
 #now keep talking with the client
 while 1:
     #wait to accept a connection - blocking call
     conn, addr = s.accept()
-    print 'Connected with ' + addr[0] + ':' + str(addr[1])
+    logger.debug('Connected with ' + addr[0] + ':' + str(addr[1]))
 
     #start new thread takes 1st argument as a function name to be run, second is the tuple of arguments to the function.
     start_new_thread(clientthread ,(conn, addr))
