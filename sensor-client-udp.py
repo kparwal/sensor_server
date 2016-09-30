@@ -1,3 +1,5 @@
+#!/usr/bin/python
+
 import socket   #for sockets
 import sys  #for exit
 import random
